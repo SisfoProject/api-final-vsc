@@ -88,9 +88,10 @@ jadwal.get('/all-jadwal/:kelas', (req, res) => {
 
 jadwal.put('/update-jadwal/:id', (req, res) => {
     const { id } = req.params
-    const {hari, jam} = req.body
-    const q = 'UPDATE jadwal SET jam = ?, hari = ? WHERE id = ?'
-    db.query(q, [jam, hari, id], (err, result) => {
+    const {hari, jam, jam_akhir} = req.body
+    console.log(hari, jam, jam_akhir, id)
+    const q = 'UPDATE jadwal SET hari = ?, jam = ?, jam_akhir = ? WHERE kode_jadwal = ?'
+    db.query(q, [hari, jam, jam_akhir, id], (err, result) => {
         if (err) {
             res.status(500).send(err)
         }
