@@ -23,6 +23,7 @@ jadwal.get('/jadwal/:hari/:kelas', (req, res) => {
     })
 })
 
+
 jadwal.get('/all-jadwal', (req, res) => {
     const q = `SELECT * FROM v_jadwal`
     db.query(q, (err, result) => {
@@ -101,6 +102,19 @@ jadwal.put('/update-jadwal/:id', (req, res) => {
     })
 })
 
+jadwal.put('/update-note/:kelas', (req, res) => {
+    const {kelas} = req.params
+    const q = `UPDATE jadwal SET keterangan = null, note = null WHERE kelas = ?`
+    db.query(q, [kelas], (err, result) => {
+        if (err) {
+            res.status(500).send(err)
+        }
+        else {
+            res.status(200).send(result)
+        }
+    })
+})
+
 jadwal.get('/get-jadwal/:id', (req, res) => {
     const { id } = req.params
     const q = 'select * from v_jadwal where id = ?'
@@ -118,7 +132,7 @@ jadwal.get('/get-jadwal/:id', (req, res) => {
 jadwal.put('/update-status-jadwal/:id', (req, res) => {
     const {id} = req.params
     const {keterangan,note,kelas} = req.body
-    console.log(keterangan,note,kelas,id)
+
     const q = 'UPDATE jadwal SET keterangan = ?, note = ? WHERE kode_jadwal = ? and kelas = ?'
     db.query(q, [keterangan,note,id,kelas], (err, result) => {
         if (err) {
@@ -130,6 +144,33 @@ jadwal.put('/update-status-jadwal/:id', (req, res) => {
     })
 })
 
+jadwal.post('/show-jadwal/', (req, res) => {
+    const { ruangan } = req.body
+    const q = `
+    SELECT
+      nama_ruangan,
+      hari,
+      awal,
+      akhir
+    FROM v_jadwal
+    WHERE nama_ruangan = '${ruangan}'
+      AND hari = DAYOFWEEK(CURDATE()) 
+      AND CURTIME() BETWEEN awal AND akhir;`
+
+    db.query(q, (err, result) => {
+        if (err) {
+            res.status(500).send(err)
+        }
+        else {
+            if(result.length === 0){
+                res.status(201).send('tidak ada jadwal')
+            }
+            else{
+                res.status(200).send(result)
+            }
+        }
+    })
+})
 
 
 

@@ -19,7 +19,20 @@ forget.post('/forget', (req, res) => {
   });
 });
 
+forget.get('/forget', (req, res) => {
+  const q = 'SELECT * FROM lupa_password';
+
+  db.query(q, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send(err);
+    } else {
+      res.status(200).send(result);
+    }
+  })
+
+})
+
 module.exports = forget;
 
 
-module.exports = forget

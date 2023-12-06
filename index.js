@@ -44,6 +44,9 @@ app.use('/', ruangan)
 const forget = require('./router/forgetPass')
 app.use('/', forget)
 
+// get mk
+const mk = require('./router/getadmin')
+app.use('/', mk)
 
 app.listen(port, () => {
     console.log(`App listening at ${process.env.BASE_URL}:${port}`)
