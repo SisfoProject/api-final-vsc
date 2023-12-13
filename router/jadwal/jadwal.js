@@ -7,6 +7,8 @@ const db = require('../../lib/mysql')
 //     res.send('')
 // })
 
+
+
 jadwal.get('/jadwal/:hari/:kelas', (req, res) => {
     const { kelas, hari } = req.params
     const q = `SELECT * FROM v_jadwal WHERE kelas = '${kelas}' AND hari = '${hari}' order by jam`
@@ -89,17 +91,29 @@ jadwal.get('/all-jadwal/:kelas', (req, res) => {
 
 jadwal.put('/update-jadwal/:id', (req, res) => {
     const { id } = req.params
-    const {hari, jam, jam_akhir} = req.body
-    console.log(hari, jam, jam_akhir, id)
-    const q = 'UPDATE jadwal SET hari = ?, jam = ?, jam_akhir = ? WHERE kode_jadwal = ?'
-    db.query(q, [hari, jam, jam_akhir, id], (err, result) => {
-        if (err) {
-            res.status(500).send(err)
-        }
-        else {
-            res.status(200).send(result)
-        }
-    })
+    const {hari, jam, jam_akhir, kodeRUangan} = req.body
+    if ( kodeRUangan === '' || kodeRUangan === null){ 
+        const q = 'UPDATE jadwal SET hari = ?, jam = ?, jam_akhir = ? WHERE kode_jadwal = ?'
+        db.query(q, [hari, jam, jam_akhir, id], (err, result) => {
+            if (err) {
+                res.status(500).send(err)
+            }
+            else {
+                res.status(200).send(result)
+            }
+        })
+    }
+    else{
+        const q = 'UPDATE jadwal SET hari = ?, jam = ?, jam_akhir = ?, kode_ruangan = ? WHERE kode_jadwal = ?'
+        db.query(q, [hari, jam, jam_akhir, kodeRUangan, id], (err, result) => {
+            if (err) {
+                res.status(500).send(err)
+            }
+            else {
+                res.status(200).send(result)
+            }
+        })
+    }
 })
 
 jadwal.put('/update-note/:kelas', (req, res) => {

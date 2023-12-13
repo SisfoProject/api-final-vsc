@@ -2,6 +2,24 @@ const express = require('express');
 const ruangan = express.Router();
 const db = require('../lib/mysql');
 
+
+ruangan.get('/ruangan', (req, res) => {
+
+  const q = 'SELECT * FROM ruangan limit 20';
+
+  db.query(q, (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send(err);
+    } else if (result.length === 0) {
+      return res.status(200).send('Tidak ada ruangan');
+    } else {
+      return res.status(200).json(result);
+    }
+  })
+
+})
+
 ruangan.get('/ruangan/:hari/:jam', (req, res) => {
   const { hari, jam } = req.params;
 
